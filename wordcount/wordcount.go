@@ -1,11 +1,12 @@
 package main
 
 import (
-	"labMapReduce/mapreduce"
+	"fmt"
 	"hash/fnv"
-	"unicode" 	
+	"labMapReduce/mapreduce"
 	"strconv"
 	"strings"
+	"unicode"
 )
 
 // mapFunc is called for each array of bytes read from the splitted files. For wordcount
@@ -33,16 +34,27 @@ func mapFunc(input []byte) (result []mapreduce.KeyValue) {
 	text = strings.ToLower(text)
 	var word string = ""
 	var mapAux map[string]int = make(map[string]int)
-	
-	for _, c := range text {  
+
+	for _, c := range text {
 		//COMPLETAR ESSE CÓDIGO!!!
+		if !unicode.IsLetter(c) && !unicode.IsNumber(c) {
+			fmt.Println(word)
+			if val, ok := mapAux[word]; ok {
+				val++
+			} else {
+				mapAux[word] = 1
+			}
+			word = ""
+		} else {
+			word += string(c)
+		}
 	}
-	
+
 	for k, v := range mapAux {
-		result = append(result, mapreduce.KeyValue{k,strconv.Itoa(v)})
+		result = append(result, mapreduce.KeyValue{k, strconv.Itoa(v)})
 	}
 	//fmt.Printf("%v", mapAux) //Para ajudar nos seus testes!
-	return result	
+	return result
 }
 
 // reduceFunc is called for each merged array of KeyValue resulted from all map jobs.
@@ -65,10 +77,10 @@ func reduceFunc(input []mapreduce.KeyValue) (result []mapreduce.KeyValue) {
 	/////////////////////////
 	// YOUR CODE GOES HERE //
 	/////////////////////////
-		
+
 	//COMPLETAR ESSE CÓDIGO!!!
-			
-	return result	
+
+	return result
 }
 
 // shuffleFunc will shuffle map job results into different job tasks. It should assert that

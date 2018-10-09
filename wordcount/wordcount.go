@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"hash/fnv"
 	"labMapReduce/mapreduce"
 	"strconv"
@@ -32,15 +31,15 @@ func mapFunc(input []byte) (result []mapreduce.KeyValue) {
 	var text = string(input)
 	text = text + " " //bizu pra entrar a última palavra
 	text = strings.ToLower(text)
-	var word string = ""
-	var mapAux map[string]int = make(map[string]int)
+	var word string
+	var mapAux = make(map[string]int)
 
 	for _, c := range text {
 		//COMPLETAR ESSE CÓDIGO!!!
 		if !unicode.IsLetter(c) && !unicode.IsNumber(c) {
-			fmt.Println(word)
-			if val, ok := mapAux[word]; ok {
-				val++
+			// fmt.Println(word)
+			if _, ok := mapAux[word]; ok {
+				mapAux[word]++
 			} else {
 				mapAux[word] = 1
 			}
@@ -77,7 +76,24 @@ func reduceFunc(input []mapreduce.KeyValue) (result []mapreduce.KeyValue) {
 	/////////////////////////
 	// YOUR CODE GOES HERE //
 	/////////////////////////
+	var mapAux = make(map[string]int)
+	var intAux int
+	for _, v := range input {
+		if val, err := strconv.Atoi(v.Value); err != nil {
+			intAux = val
+		} else {
+			intAux = 1
+		}
+		if _, ok := mapAux[v.Key]; ok {
+			mapAux[v.Key] += intAux
+		} else {
+			mapAux[v.Key] = intAux
+		}
+	}
 
+	for k, v := range mapAux {
+		result = append(result, mapreduce.KeyValue{k, strconv.Itoa(v)})
+	}
 	//COMPLETAR ESSE CÓDIGO!!!
 
 	return result

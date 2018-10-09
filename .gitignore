@@ -1,4 +1,4 @@
-/map/*
-/reduce/*
-/result/*
+/wordcount/map/*
+/wordcount/reduce/*
+/wordcount/result/*
 wordcount.exe

@@ -78,8 +78,9 @@ func reduceFunc(input []mapreduce.KeyValue) (result []mapreduce.KeyValue) {
 	/////////////////////////
 	var mapAux = make(map[string]int)
 	var intAux int
+	
 	for _, v := range input {
-		if val, err := strconv.Atoi(v.Value); err != nil {
+		if val, err := strconv.Atoi(v.Value); err == nil {
 			intAux = val
 		} else {
 			intAux = 1
